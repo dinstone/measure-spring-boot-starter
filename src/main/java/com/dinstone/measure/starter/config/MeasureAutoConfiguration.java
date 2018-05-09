@@ -15,7 +15,7 @@ import com.dinstone.measure.config.MetricConfig;
 
 @Configuration
 @ConditionalOnBean(MeasureConfiguration.Marker.class)
-@EnableConfigurationProperties(AspectProperties.class)
+@EnableConfigurationProperties({ MetricProperties.class, AspectProperties.class })
 public class MeasureAutoConfiguration {
 
 	private static final Logger logger = LoggerFactory.getLogger(MeasureAutoConfiguration.class);
