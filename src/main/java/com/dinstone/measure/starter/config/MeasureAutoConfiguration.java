@@ -15,30 +15,30 @@ import com.dinstone.measure.config.MetricConfig;
 
 @Configuration
 @ConditionalOnBean(MeasureConfiguration.Marker.class)
-@EnableConfigurationProperties(MeasureProperties.class)
+@EnableConfigurationProperties(AspectProperties.class)
 public class MeasureAutoConfiguration {
 
 	private static final Logger logger = LoggerFactory.getLogger(MeasureAutoConfiguration.class);
 
 	@Bean
-	Advisor measureAdvisor(MeasureProperties measureProperties) {
-		String aspectjExpression = measureProperties.getAspectjExpression();
+	Advisor measureAdvisor(AspectProperties measureProperties, MetricProperties metricProperties) {
+		String aspectjExpression = measureProperties.getExpression();
 		if (aspectjExpression == null || aspectjExpression.isEmpty()) {
-			throw new IllegalArgumentException("measure.aspectj-expression is null");
+			throw new IllegalArgumentException("measure.aspect.expression is null");
 		}
 
-		logger.info("measure aspectj aspectj-expression is {}", aspectjExpression);
+		logger.info("measure aspectj expression is {}", aspectjExpression);
 
 		MetricConfig metricConfig = new MetricConfig();
-		String mln = measureProperties.getMetricLoadName();
+		String mln = metricProperties.getLoadName();
 		if (mln != null && mln.length() > 0) {
 			metricConfig.setServiceLoadName(mln);
 		}
-		Boolean mee = measureProperties.getMetricErrorEnable();
+		Boolean mee = metricProperties.getErrorEnable();
 		if (mee != null) {
 			metricConfig.setEnableErrorMetric(mee);
 		}
-		String mrn = measureProperties.getMetricRegistryName();
+		String mrn = metricProperties.getRegistryName();
 		if (mrn != null && mrn.length() > 0) {
 			metricConfig.setMetricRegistryName(mrn);
 		}
