@@ -13,14 +13,14 @@ import org.springframework.context.annotation.Configuration;
 
 import com.dinstone.measure.advice.MetricAdvice;
 import com.dinstone.measure.config.MetricConfig;
-import com.dinstone.measure.endpoint.MeasureEndpoint;
 
 @Configuration
+@ConditionalOnClass(Endpoint.class)
 @ConditionalOnBean(MeasureEnableConfiguration.Marker.class)
 @EnableConfigurationProperties({ MetricProperties.class, AspectProperties.class })
-public class MeasureAutoConfiguration {
+public class MeasureEndpointAutoConfiguration {
 
-	private static final Logger logger = LoggerFactory.getLogger(MeasureAutoConfiguration.class);
+	private static final Logger logger = LoggerFactory.getLogger(MeasureEndpointAutoConfiguration.class);
 
 	@Bean
 	MetricConfig metricConfig(MetricProperties metricProperties) {
@@ -54,20 +54,5 @@ public class MeasureAutoConfiguration {
 		advisor.setExpression(aspectjExpression);
 		advisor.setAdvice(new MetricAdvice(metricConfig));
 		return advisor;
-	}
-
-	@Bean
-	@ConditionalOnClass(Endpoint.class)
-	MeasureEndpoint measureEndpoint(EndpointProperties endpointProperties, MetricConfig metricConfig) {
-		String id = endpointProperties.getId();
-		if (id == null) {
-			id = "measure";
-		}
-
-		Boolean enable = endpointProperties.getEnable();
-		if (enable == null) {
-			enable = true;
-		}
-		return new MeasureEndpoint(id, enable, metricConfig.getMetricRegistryName());
 	}
 }

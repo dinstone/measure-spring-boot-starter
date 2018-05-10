@@ -7,10 +7,10 @@ import java.lang.annotation.Target;
 
 import org.springframework.context.annotation.Import;
 
-import com.dinstone.measure.starter.config.MeasureConfiguration;
+import com.dinstone.measure.starter.config.MeasureEnableConfiguration;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Import(MeasureConfiguration.class)
+@Import(MeasureEnableConfiguration.class)
 public @interface EnableMeasure {
 }
