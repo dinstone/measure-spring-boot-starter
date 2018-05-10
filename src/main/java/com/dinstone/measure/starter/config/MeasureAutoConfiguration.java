@@ -1,6 +1,5 @@
 package com.dinstone.measure.starter.config;
 
-import org.aopalliance.aop.Advice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.Advisor;
@@ -21,14 +20,7 @@ public class MeasureAutoConfiguration {
 	private static final Logger logger = LoggerFactory.getLogger(MeasureAutoConfiguration.class);
 
 	@Bean
-	Advisor measureAdvisor(AspectProperties measureProperties, MetricProperties metricProperties) {
-		String aspectjExpression = measureProperties.getExpression();
-		if (aspectjExpression == null || aspectjExpression.isEmpty()) {
-			throw new IllegalArgumentException("measure.aspect.expression is null");
-		}
-
-		logger.info("measure aspectj expression is {}", aspectjExpression);
-
+	MetricConfig metricConfig(MetricProperties metricProperties) {
 		MetricConfig metricConfig = new MetricConfig();
 		String mln = metricProperties.getLoadName();
 		if (mln != null && mln.length() > 0) {
@@ -42,11 +34,22 @@ public class MeasureAutoConfiguration {
 		if (mrn != null && mrn.length() > 0) {
 			metricConfig.setMetricRegistryName(mrn);
 		}
-		Advice advice = new MetricAdvice(metricConfig);
+
+		return metricConfig;
+	}
+
+	@Bean
+	Advisor measureAdvisor(AspectProperties measureProperties, MetricConfig metricConfig) {
+		String aspectjExpression = measureProperties.getExpression();
+		if (aspectjExpression == null || aspectjExpression.isEmpty()) {
+			throw new IllegalArgumentException("measure.aspect.expression is null");
+		}
+
+		logger.info("measure aspectj expression is {}", aspectjExpression);
 
 		AspectJExpressionPointcutAdvisor advisor = new AspectJExpressionPointcutAdvisor();
 		advisor.setExpression(aspectjExpression);
-		advisor.setAdvice(advice);
+		advisor.setAdvice(new MetricAdvice(metricConfig));
 		return advisor;
 	}
 }
