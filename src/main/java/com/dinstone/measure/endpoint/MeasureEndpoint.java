@@ -36,22 +36,16 @@ public class MeasureEndpoint extends AbstractEndpoint<Map<String, Metric>> {
 		Map<String, Metric> mmap = new HashMap<>();
 		if ("counter".equalsIgnoreCase(type)) {
 			mmap.putAll(registry.getCounters());
-			return mmap;
 		} else if ("histogram".equalsIgnoreCase(type)) {
 			mmap.putAll(registry.getHistograms());
-			return mmap;
 		} else if ("meter".equalsIgnoreCase(type)) {
 			mmap.putAll(registry.getMeters());
-			return mmap;
 		} else if ("timer".equalsIgnoreCase(type)) {
 			mmap.putAll(registry.getTimers());
-			return mmap;
 		} else if ("gauge".equalsIgnoreCase(type)) {
 			mmap.putAll(registry.getGauges());
-			return mmap;
-		} else {
-			return registry.getMetrics();
 		}
+		return mmap;
 	}
 
 }
