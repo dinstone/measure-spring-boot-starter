@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.dinstone.measure.starter.config.MeasureAutoConfiguration
+com.dinstone.measure.starter.config.MeasureMetricAutoConfiguration,\
+com.dinstone.measure.starter.config.MeasureEndpointAutoConfiguration

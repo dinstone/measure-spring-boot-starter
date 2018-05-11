@@ -4,25 +4,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.aspectj.AspectJExpressionPointcutAdvisor;
-import org.springframework.boot.actuate.endpoint.Endpoint;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.dinstone.measure.advice.MetricAdvice;
 import com.dinstone.measure.config.MetricConfig;
-import com.dinstone.measure.endpoint.MeasureEndpoint;
 
 @Configuration
 @ConditionalOnBean(MeasureEnableConfiguration.Marker.class)
 @EnableConfigurationProperties({ MetricProperties.class, AspectProperties.class })
-public class MeasureAutoConfiguration {
+public class MeasureMetricAutoConfiguration {
 
-	private static final Logger logger = LoggerFactory.getLogger(MeasureAutoConfiguration.class);
+	private static final Logger logger = LoggerFactory.getLogger(MeasureMetricAutoConfiguration.class);
 
 	@Bean
+	@ConditionalOnMissingBean
 	MetricConfig metricConfig(MetricProperties metricProperties) {
 		MetricConfig metricConfig = new MetricConfig();
 		String mln = metricProperties.getLoadName();
@@ -56,18 +55,4 @@ public class MeasureAutoConfiguration {
 		return advisor;
 	}
 
-	@Bean
-	@ConditionalOnClass(Endpoint.class)
-	MeasureEndpoint measureEndpoint(EndpointProperties endpointProperties, MetricConfig metricConfig) {
-		String id = endpointProperties.getId();
-		if (id == null) {
-			id = "measure";
-		}
-
-		Boolean enable = endpointProperties.getEnable();
-		if (enable == null) {
-			enable = true;
-		}
-		return new MeasureEndpoint(id, enable, metricConfig.getMetricRegistryName());
-	}
 }
